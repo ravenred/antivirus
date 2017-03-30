@@ -1,0 +1,39 @@
+import os, sys
+
+def findfiles():
+    path = "/root/Documents/test/"
+    dirs = os.listdir(path)
+
+    for file in dirs:
+        print file
+
+    return file
+
+#Read in file function
+def readinfile(gf):
+    getfile = open(gf, "rb")
+
+    print("File Name is: ", getfile.name)
+    print("File Mode is: ", getfile.mode)
+
+    return getfile.read()
+
+def hashfile():
+    fileshash = hashlib.md5()
+
+    buf = readinfile("/root/Documents/test/fileOne.txt")
+    fileshash.update(buf)
+    print(fileshash.hexdigest())
+
+    path = "/root/Documents/test/"
+
+    for file in os.listdir(path):
+        for file_str in file:
+            file_ob = file(os.walk(file_str))
+
+            md5files = hashlib.md5(file_ob.read()).hexdigest()
+
+            print md5files
+
+#hashfile()
+#findfiles()
