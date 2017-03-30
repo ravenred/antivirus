@@ -1,4 +1,4 @@
-#import libraries
+#import Libraries
 import hashlib
 import glob
 import os
@@ -6,6 +6,8 @@ import os
 import tkinter
 from tkinter import *
 import tkinter.messagebox
+#Database Libraries
+import mysql.connector
 
 mainframe = tkinter.Tk()
 mainframe.wm_title("Anti Malware")
@@ -13,11 +15,21 @@ mainframe.wm_title("Anti Malware")
 frame = Frame(mainframe, height=150, width=750)
 frame.pack()
 
+#Database Connection
+db = mysql.connector.connect(host='localhost', user='root', password='root', database='known_hash')
+cursor = db.cursor()
+
+sql_statement = "SELECT * FROM HASHES"
+
+cursor.execute(sql_statement)
+
+find_hash = cursor.fetchall()
+
 #Dialog Box
 mainframe.text = Text(mainframe, width=100)
 
 def findhashes():
-    dirs = glob.glob("C:/Users/shane/Downloads/Malware_Files/Malware/*")  #Reads all files in a directory
+    dirs = glob.glob("C:/Users/Ian/Documents/testav/*")  #Reads all files in a directory
 
     totalfiles=0
     knownfiles=0
@@ -29,7 +41,14 @@ def findhashes():
             print("Filename: "+file+"  MD5: " + gethash)
             mainframe.text.insert(END, "Filename: "+file+"  MD5: " + gethash+"\n")
 
-            knownhash="2a480f28394b06373b88aad510a3ed2d"
+            #knownhash="2a480f28394b06373b88aad510a3ed2d"
+            hashed = []
+
+            for hashed in find_hash:
+                knownhash = hashed[0]
+
+                print ("MD5 = ", knownhash)
+                        
 
             if knownhash == gethash:  #Compares a knownhash to each hash
                 print("Known File Found!!! \n"+knownhash+"Filename: "+file)
