@@ -29,7 +29,7 @@ find_hash = cursor.fetchall()
 mainframe.text = Text(mainframe, width=100)
 
 def findhashes():
-    dirs = glob.glob("C:/Users/Ian/Documents/testav/*")  #Reads all files in a directory
+    dirs = glob.glob("C:/Users/Ian/Documents/antivirus-master/testav/*")  #Reads all files in a directory
 
     totalfiles=0
     knownfiles=0
@@ -41,7 +41,6 @@ def findhashes():
             print("Filename: "+file+"  MD5: " + gethash)
             mainframe.text.insert(END, "Filename: "+file+"  MD5: " + gethash+"\n")
 
-            #knownhash="2a480f28394b06373b88aad510a3ed2d"
             hashed = []
 
             for hashed in find_hash:
