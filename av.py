@@ -1,23 +1,35 @@
-#import libraries
+#import Libraries
 import hashlib
 import glob
 import os
 #GUI Libraries
-import Tkinter
-from Tkinter import *
-import tkMessageBox
+import tkinter
+from tkinter import *
+import tkinter.messagebox
+#Database Libraries
+import mysql.connector
 
-mainframe = Tkinter.Tk()
+mainframe = tkinter.Tk()
 mainframe.wm_title("Anti Malware")
 
 frame = Frame(mainframe, height=150, width=750)
 frame.pack()
 
+#Database Connection
+db = mysql.connector.connect(host='localhost', user='root', password='root', database='known_hash')
+cursor = db.cursor()
+
+sql_statement = "SELECT * FROM HASHES"
+
+cursor.execute(sql_statement)
+
+find_hash = cursor.fetchall()
+
 #Dialog Box
 mainframe.text = Text(mainframe, width=100)
 
 def findhashes():
-    dirs = glob.glob("/root/Documents/test/*")  #Reads all files in a directory
+    dirs = glob.glob("C:/Users/Ian/Documents/antivirus-master/testav/*")  #Reads all files in a directory
 
     totalfiles=0
     knownfiles=0
@@ -29,7 +41,13 @@ def findhashes():
             print("Filename: "+file+"  MD5: " + gethash)
             mainframe.text.insert(END, "Filename: "+file+"  MD5: " + gethash+"\n")
 
-            knownhash="5c4d529de1396a1ce16e2c11c9757274"
+            hashed = []
+
+            for hashed in find_hash:
+                knownhash = hashed[0]
+
+                print ("MD5 = ", knownhash)
+                        
 
             if knownhash == gethash:  #Compares a knownhash to each hash
                 print("Known File Found!!! \n"+knownhash+"Filename: "+file)
@@ -40,13 +58,15 @@ def findhashes():
                 knownfiles += 1
 
                 #deleteoption = raw_input("Do You Want To Delete This File? (Y/N): ")  #User can select to delete file
-                deleteoption = tkMessageBox.askyesno("File Found", "Would You Like To Delete?\n"+file)
+                deleteoption = tkinter.messagebox.askyesno("File Found", "Would You Like To Delete?\n"+file)
 
                 if deleteoption == True:   #If user inputs "yes"
                     print("File is Deleted!")    #Notifies user
                     mainframe.text.tag_add("delete", 1.0)
                     mainframe.text.tag_config("delete", background="orange")    #delete files are displayed green
                     mainframe.text.insert(END, "File is Deleted!"+"\n", "delete")
+
+                    getmd5.close()
                     os.remove(file)    #Uses os library to delete file
 
                 else:    #If user selects "no"
@@ -60,7 +80,7 @@ def findhashes():
                 mainframe.text.insert(END, "No Known File Found"+"\n", "unknown")
                 totalfiles += 1
 
-    print "Total Files Scanned: ", totalfiles
+    print("Total Files Scanned: ", totalfiles)
     # Counter Label
     mainframe.total = Label(mainframe, text="Total Files Scanned: %d" % totalfiles)
     mainframe.total.pack(side=TOP)
